@@ -5,12 +5,30 @@ var Types = keystone.Field.Types;
  * User Model
  * ==========
  */
-var User = new keystone.List('User');
+var User = new keystone.List('User', {
+	autokey: { path: 'slug', from: 'fullName', unique: false },
+	searchFields: 'email',
+	map: { name: 'email' },
+});
 
 User.add({
 	name: { type: Types.Name, required: true, index: true },
 	email: { type: Types.Email, initial: true, required: true, unique: true, index: true },
 	password: { type: Types.Password, initial: true, required: true },
+	sex: { type: Types.Text, default: 'unknown' },
+	lastAccessDate: {
+		type: Types.Datetime,
+		default: Date.now,
+	},
+	role: {
+		type: Types.Text,
+		default: 'user',
+		options: 'admin, adminro, user, temp',
+	},
+	blocked: {
+		type: Types.Boolean,
+		default: false,
+	},
 }, 'Permissions', {
 	isAdmin: { type: Boolean, label: 'Can access Keystone', index: true },
 });
